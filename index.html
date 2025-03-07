@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Disconnection Monitoring System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f7fa;
+      flex-direction: column;
+    }
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 5px solid #1976d2;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    .container {
+      text-align: center;
+      background-color: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      max-width: 500px;
+    }
+    h1 {
+      color: #1976d2;
+      margin-top: 0;
+    }
+    p {
+      color: #555;
+      line-height: 1.6;
+    }
+    .manual-link {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #1976d2;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      display: inline-block;
+      font-weight: bold;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <script>
+    // The app's deployment ID
+    var deploymentId = "AKfycbztAsvGG_PDUycj294EYVB8tZAGTRi-IHPOOXoSRsxptV7mpNHpHuio5tzYDco8mNLY";
+    
+    // Chrome-compatible URL (works in ALL browsers)
+    var appUrl = "https://script.google.com/a/~/macros/s/" + deploymentId + "/exec";
+    
+    // Redirect after a short delay
+    window.onload = function() {
+      setTimeout(function() {
+        window.location.href = appUrl;
+      }, 1500); // 1.5 second delay to show the loading animation
+    };
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Disconnection Monitoring System</h1>
+    <p>You are being redirected to the application...</p>
+    <div class="loader"></div>
+    <p>If you are not redirected automatically, please click the button below:</p>
+    <a href="https://script.google.com/a/~/macros/s/AKfycbztAsvGG_PDUycj294EYVB8tZAGTRi-IHPOOXoSRsxptV7mpNHpHuio5tzYDco8mNLY/exec" class="manual-link">Launch Application</a>
+  </div>
+</body>
+</html>
