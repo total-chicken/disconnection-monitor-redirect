@@ -66,6 +66,29 @@
       padding-top: 20px;
       border-top: 1px solid #eee;
     }
+    .location-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .location-info {
+      font-size: 14px;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #e8f5e9;
+      border-radius: 5px;
+      display: none;
+    }
+    .location-icon {
+      display: inline-block;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -77,6 +100,16 @@
     
     // Chrome-compatible URL (works in ALL browsers)
     var appUrl = "https://script.google.com/a/~/macros/s/" + deploymentId + "/exec";
+    
+    // Add location parameter to URL
+    function addLocationToUrl(url, lat, lng) {
+      // Add location as URL parameters so the app can use it immediately
+      if (url.indexOf('?') > -1) {
+        return url + "&lat=" + lat + "&lng=" + lng;
+      } else {
+        return url + "?lat=" + lat + "&lng=" + lng;
+      }
+    }
     
     // Firefox Play Store URL
     var firefoxPlayStoreUrl = "https://play.google.com/store/apps/details?id=org.mozilla.firefox";
@@ -111,37 +144,155 @@
       }
     }
     
-    // Handle redirection logic
+    // Request location access and then redirect
+    function getLocationAndRedirect() {
+      var locationInfo = document.getElementById('locationInfo');
+      locationInfo.style.display = 'block';
+      locationInfo.innerHTML = '<span class="location-icon">📍</span> Requesting location access...';
+      
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            // Success - we got the location
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            
+            // Save to localStorage for future use
+            localStorage.setItem('userLat', lat);
+            localStorage.setItem('userLng', lng);
+            localStorage.setItem('locationGranted', 'true');
+            
+            // Show success message
+            locationInfo.innerHTML = '<span class="location-icon">✅</span> Location access granted! Redirecting...';
+            locationInfo.style.backgroundColor = '#e8f5e9';
+            
+            // Modify URL with location parameters
+            var finalUrl = addLocationToUrl(appUrl, lat, lng);
+            
+            // Redirect with a slight delay to show the success message
+            setTimeout(function() {
+              // Handle redirection based on browser
+              if (isAndroid() && !isFirefox()) {
+                openInFirefox();
+              } else {
+                window.location.href = finalUrl;
+              }
+            }, 1000);
+          },
+          function(error) {
+            // Error getting location
+            console.log("Geolocation error:", error);
+            
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                locationInfo.innerHTML = '<span class="location-icon">❌</span> Location access denied. Please enable location services in your browser settings for this site.';
+                break;
+              case error.POSITION_UNAVAILABLE:
+                locationInfo.innerHTML = '<span class="location-icon">❌</span> Location information unavailable. Please try again later.';
+                break;
+              case error.TIMEOUT:
+                locationInfo.innerHTML = '<span class="location-icon">❌</span> Location request timed out. Please try again.';
+                break;
+              default:
+                locationInfo.innerHTML = '<span class="location-icon">❌</span> Unknown error occurred. Please try again.';
+            }
+            
+            locationInfo.style.backgroundColor = '#ffebee';
+            
+            // Still show the manual link after 2 seconds
+            setTimeout(function() {
+              document.getElementById('manualContinue').style.display = 'block';
+            }, 2000);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        );
+      } else {
+        // Browser doesn't support geolocation
+        locationInfo.innerHTML = '<span class="location-icon">❌</span> Your browser does not support geolocation.';
+        locationInfo.style.backgroundColor = '#ffebee';
+        document.getElementById('manualContinue').style.display = 'block';
+      }
+    }
+    
+    // Handle page load
     window.onload = function() {
-      if (isAndroid()) {
-        if (isFirefox()) {
-          // Already in Firefox, proceed normally
-          console.log("Already in Firefox, proceeding normally");
-          setTimeout(function() {
-            window.location.href = appUrl;
-          }, 1500);
-        } else {
-          // Show Firefox section
-          document.getElementById('firefoxSection').style.display = 'block';
-          document.getElementById('normalSection').style.display = 'none';
+      // Check if location was previously granted
+      var locationGranted = localStorage.getItem('locationGranted') === 'true';
+      
+      if (locationGranted) {
+        // Already have location permission, proceed with that data
+        var lat = localStorage.getItem('userLat');
+        var lng = localStorage.getItem('userLng');
+        
+        if (lat && lng) {
+          var finalUrl = addLocationToUrl(appUrl, lat, lng);
           
-          // Set Firefox button click handler
-          document.getElementById('firefoxButton').onclick = function() {
-            openInFirefox();
-          };
+          // Check for Android and Firefox
+          if (isAndroid()) {
+            if (isFirefox()) {
+              // Already in Firefox, proceed normally with location
+              setTimeout(function() {
+                window.location.href = finalUrl;
+              }, 1500);
+            } else {
+              // Show Firefox section
+              document.getElementById('firefoxSection').style.display = 'block';
+              document.getElementById('normalSection').style.display = 'none';
+              document.getElementById('locationBtn').style.display = 'none';
+              
+              // Set Firefox button click handler
+              document.getElementById('firefoxButton').onclick = function() {
+                openInFirefox();
+              };
+            }
+          } else {
+            // Not Android, proceed normally with location
+            setTimeout(function() {
+              window.location.href = finalUrl;
+            }, 1500);
+          }
+        } else {
+          // Something is wrong with stored location data
+          showLocationButton();
         }
       } else {
-        // Not Android, proceed normally
-        setTimeout(function() {
-          window.location.href = appUrl;
-        }, 1500);
+        // Don't have location permission yet
+        showLocationButton();
       }
     };
+    
+    function showLocationButton() {
+      // Show location request button instead of auto-redirecting
+      document.getElementById('locationBtn').style.display = 'block';
+      document.getElementById('normalSection').style.display = 'none';
+      
+      // Handle Android + Firefox check
+      if (isAndroid() && !isFirefox()) {
+        document.getElementById('firefoxSection').style.display = 'block';
+      }
+    }
   </script>
 </head>
 <body>
   <div class="container">
     <h1>Disconnection Monitoring System</h1>
+    
+    <!-- Location permission section -->
+    <div id="locationBtn" style="display: none;">
+      <p>This app requires location access to function properly.</p>
+      <button onclick="getLocationAndRedirect()" class="location-button">
+        <span style="margin-right: 5px;">📍</span> Grant Location Access & Continue
+      </button>
+      <div id="locationInfo" class="location-info"></div>
+      <div id="manualContinue" style="margin-top: 20px; display: none;">
+        <p><small>If you can't enable location now, you can still continue:</small></p>
+        <a href="https://script.google.com/a/~/macros/s/AKfycbya4ISrNzGsbTL5sPQOEjLyyPf40pM1_fj9dQwxjfGSqkGkEAtnS5krGicKtFLS0mBv/exec" class="manual-link" style="font-size: 14px; padding: 8px 16px;">Continue Without Location</a>
+      </div>
+    </div>
     
     <!-- Normal redirection section (default) -->
     <div id="normalSection">
