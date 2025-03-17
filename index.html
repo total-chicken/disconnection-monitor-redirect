@@ -50,22 +50,6 @@
       display: inline-block;
       font-weight: bold;
     }
-/*     .firefox-button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #ff9500;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      display: inline-block;
-      font-weight: bold;
-    } */
-/*     .firefox-section {
-      display: none;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-    } */
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -78,64 +62,12 @@
     // Chrome-compatible URL (works in ALL browsers)
     var appUrl = "https://script.google.com/a/~/macros/s/" + deploymentId + "/exec";
     
-    // Firefox Play Store URL
-    var firefoxPlayStoreUrl = "https://play.google.com/store/apps/details?id=org.mozilla.firefox";
-    
-    // Check if device is Android
-    function isAndroid() {
-      return /Android/i.test(navigator.userAgent);
-    }
-    
-    // Check if browser is Firefox
-    // function isFirefox() {
-    //   return /Firefox/i.test(navigator.userAgent);
-    // }
-    
-    // // Try to open in Firefox or redirect to Play Store
-    // function openInFirefox() {
-    //   try {
-    //     // Try to open Firefox with the URL
-    //     window.location.href = "intent://" + appUrl.replace(/^https?:\/\//, '') + 
-    //       "#Intent;scheme=https;package=org.mozilla.firefox;end";
-        
-    //     // Set a timeout to check if Firefox opened
-    //     setTimeout(function() {
-    //       // If still on this page, Firefox may not be installed
-    //       if (document.hasFocus()) {
-    //         window.location.href = firefoxPlayStoreUrl;
-    //       }
-    //     }, 2000);
-    //   } catch (e) {
-    //     // If any error occurs, redirect to Play Store
-    //     window.location.href = firefoxPlayStoreUrl;
-    //   }
-    // }
-    
     // Handle redirection logic
     window.onload = function() {
-      if (isAndroid()) {
-        if (isFirefox()) {
-          // Already in Firefox, proceed normally
-          console.log("Already in Firefox, proceeding normally");
-          setTimeout(function() {
-            window.location.href = appUrl;
-          }, 1500);
-        } else {
-          // Show Firefox section
-          document.getElementById('firefoxSection').style.display = 'block';
-          document.getElementById('normalSection').style.display = 'none';
-          
-          // Set Firefox button click handler
-          document.getElementById('firefoxButton').onclick = function() {
-            openInFirefox();
-          };
-        }
-      } else {
-        // Not Android, proceed normally
-        setTimeout(function() {
-          window.location.href = appUrl;
-        }, 1500);
-      }
+      // Redirect automatically after a short delay
+      setTimeout(function() {
+        window.location.href = appUrl;
+      }, 1500);
     };
   </script>
 </head>
@@ -143,25 +75,12 @@
   <div class="container">
     <h1>Disconnection Monitoring System</h1>
     
-    <!-- Normal redirection section (default) -->
     <div id="normalSection">
       <p>You are being redirected to the application...</p>
       <div class="loader"></div>
       <p>If you are not redirected automatically, please click the button below:</p>
       <a href="https://script.google.com/a/~/macros/s/AKfycbyUT0Jvas_74o6ApVSVHkYVBSi0eUAmHUSDbFY1tHAMZribda_s_ItfU3vGgDJiIpDT/exec" class="manual-link">Launch Application</a>
     </div>
-    
-    <!-- Firefox section (for Android non-Firefox browsers) -->
-<!--     <div id="firefoxSection" class="firefox-section">
-      <p><strong>For the best experience, please use Firefox browser.</strong></p>
-      <p>Our application works best with Firefox on Android. Click the button below to open in Firefox or install it if needed.</p>
-      <button id="firefoxButton" class="firefox-button">Open in Firefox</button>
-      
-      <div style="margin-top: 30px;">
-        <p>Or continue with your current browser (not recommended):</p>
-        <a href="https://script.google.com/a/~/macros/s/AKfycbyUT0Jvas_74o6ApVSVHkYVBSi0eUAmHUSDbFY1tHAMZribda_s_ItfU3vGgDJiIpDT/exec" class="manual-link">Continue Anyway</a>
-      </div>
-    </div> -->
   </div>
 </body>
 </html>
