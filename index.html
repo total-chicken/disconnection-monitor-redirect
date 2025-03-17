@@ -50,7 +50,7 @@
       display: inline-block;
       font-weight: bold;
     }
-    .firefox-button {
+/*     .firefox-button {
       margin-top: 20px;
       padding: 10px 20px;
       background-color: #ff9500;
@@ -59,13 +59,13 @@
       border-radius: 5px;
       display: inline-block;
       font-weight: bold;
-    }
-    .firefox-section {
+    } */
+/*     .firefox-section {
       display: none;
       margin-top: 30px;
       padding-top: 20px;
       border-top: 1px solid #eee;
-    }
+    } */
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -87,29 +87,29 @@
     }
     
     // Check if browser is Firefox
-    function isFirefox() {
-      return /Firefox/i.test(navigator.userAgent);
-    }
+    // function isFirefox() {
+    //   return /Firefox/i.test(navigator.userAgent);
+    // }
     
-    // Try to open in Firefox or redirect to Play Store
-    function openInFirefox() {
-      try {
-        // Try to open Firefox with the URL
-        window.location.href = "intent://" + appUrl.replace(/^https?:\/\//, '') + 
-          "#Intent;scheme=https;package=org.mozilla.firefox;end";
+    // // Try to open in Firefox or redirect to Play Store
+    // function openInFirefox() {
+    //   try {
+    //     // Try to open Firefox with the URL
+    //     window.location.href = "intent://" + appUrl.replace(/^https?:\/\//, '') + 
+    //       "#Intent;scheme=https;package=org.mozilla.firefox;end";
         
-        // Set a timeout to check if Firefox opened
-        setTimeout(function() {
-          // If still on this page, Firefox may not be installed
-          if (document.hasFocus()) {
-            window.location.href = firefoxPlayStoreUrl;
-          }
-        }, 2000);
-      } catch (e) {
-        // If any error occurs, redirect to Play Store
-        window.location.href = firefoxPlayStoreUrl;
-      }
-    }
+    //     // Set a timeout to check if Firefox opened
+    //     setTimeout(function() {
+    //       // If still on this page, Firefox may not be installed
+    //       if (document.hasFocus()) {
+    //         window.location.href = firefoxPlayStoreUrl;
+    //       }
+    //     }, 2000);
+    //   } catch (e) {
+    //     // If any error occurs, redirect to Play Store
+    //     window.location.href = firefoxPlayStoreUrl;
+    //   }
+    // }
     
     // Handle redirection logic
     window.onload = function() {
@@ -152,7 +152,7 @@
     </div>
     
     <!-- Firefox section (for Android non-Firefox browsers) -->
-    <div id="firefoxSection" class="firefox-section">
+<!--     <div id="firefoxSection" class="firefox-section">
       <p><strong>For the best experience, please use Firefox browser.</strong></p>
       <p>Our application works best with Firefox on Android. Click the button below to open in Firefox or install it if needed.</p>
       <button id="firefoxButton" class="firefox-button">Open in Firefox</button>
@@ -161,7 +161,7 @@
         <p>Or continue with your current browser (not recommended):</p>
         <a href="https://script.google.com/a/~/macros/s/AKfycbyUT0Jvas_74o6ApVSVHkYVBSi0eUAmHUSDbFY1tHAMZribda_s_ItfU3vGgDJiIpDT/exec" class="manual-link">Continue Anyway</a>
       </div>
-    </div>
+    </div> -->
   </div>
 </body>
 </html>
